@@ -107,6 +107,13 @@ app.use(flash());
 //     lusca.csrf()(req, res, next);
 //   }
 // });
+app.use((req, res, next) => {
+  if (req.path === '/account') {
+    // Multer multipart/form-data handling needs to occur before the Lusca CSRF check.
+    lusca.csrf()(req, res, next);
+
+  }
+});
 app.use(lusca.xframe('SAMEORIGIN'));
 app.use(lusca.xssProtection(true));
 app.disable('x-powered-by');
