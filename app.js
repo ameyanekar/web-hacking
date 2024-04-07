@@ -16,6 +16,7 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const multer = require('multer');
 const rateLimit = require('express-rate-limit');
+const cookieParser = require('cookie-parser');
 
 const upload = multer({ dest: path.join(__dirname, 'uploads') });
 
@@ -85,6 +86,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(limiter);
+app.use(cookieParser());
 app.use(session({
   resave: true,
   saveUninitialized: true,
@@ -99,6 +101,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+//Secure 
 // app.use((req, res, next) => {
 //   if (req.path === '/api/upload') {
 //     // Multer multipart/form-data handling needs to occur before the Lusca CSRF check.
@@ -107,13 +110,16 @@ app.use(flash());
 //     lusca.csrf()(req, res, next);
 //   }
 // });
-app.use((req, res, next) => {
-  if (req.path === '/account') {
-    // Multer multipart/form-data handling needs to occur before the Lusca CSRF check.
-    lusca.csrf()(req, res, next);
+// Insecure - Comment out to completely disable CSRF
+// app.use((req, res, next) => {
+//   if (req.path === '/account') {
+//     // Multer multipart/form-data handling needs to occur before the Lusca CSRF check.
+//     lusca.csrf()(req, res, next);
 
-  }
-});
+//   } else {
+//     next();
+//   }
+// });
 app.use(lusca.xframe('SAMEORIGIN'));
 app.use(lusca.xssProtection(true));
 app.disable('x-powered-by');

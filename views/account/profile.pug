@@ -5,7 +5,10 @@ block content
     h3 Profile Information
 
   form(action='/account/profile', method='POST')
-    input(type='hidden', name='_csrf', value=_csrf)
+    //- input(type='hidden', name='_csrf', value=_csrf)
+    //- Uncomment input field above to enable CSRF token in form
+    //- input(type='hidden', name='_csrf', value=cookie_csrf)
+    //- Above line is for testing double submit cookies
     .form-group.row
       label.col-md-3.col-form-label.font-weight-bold.text-right(for='email') Email
       .col-md-7
@@ -58,7 +61,7 @@ block content
     h3 Change Password
 
   form(action='/account/password', method='POST')
-    input(type='hidden', name='_csrf', value=_csrf)
+    //- input(type='hidden', name='_csrf', value=_csrf)
     .form-group.row
       label.col-md-3.col-form-label.font-weight-bold.text-right(for='password') New Password
       .col-md-7.mb-2
@@ -79,7 +82,7 @@ block content
   form(action='/account/delete', method='POST', onsubmit="return confirm('Are you sure you want to delete your account?');")
     .form-group
       p.offset-sm-3.col-md-7.pl-2 You can delete your account, but keep in mind this action is irreversible.
-      input(type='hidden', name='_csrf', value=_csrf)
+      //- input(type='hidden', name='_csrf', value=_csrf)
       .offset-sm-3.col-md-7.pl-2
         button.btn.btn-danger(type='submit')
           i.fas.fa-trash-alt.fa-sm.iconpadding

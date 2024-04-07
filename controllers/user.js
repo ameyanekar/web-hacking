@@ -6,7 +6,7 @@ const _ = require('lodash');
 const validator = require('validator');
 const mailChecker = require('mailchecker');
 const User = require('../models/User');
-
+const { v4: uuidv4 } = require('uuid');
 const randomBytesAsync = promisify(crypto.randomBytes);
 
 /**
@@ -82,6 +82,11 @@ exports.postLogin = (req, res, next) => {
     }
     req.logIn(user, (err) => {
       if (err) { return next(err); }
+      res.cookie("csrf", uuidv4(), {
+        // expire in year 9999 (from: https://stackoverflow.com/a/28289961)
+        expires: new Date(253402300000000),
+        httpOnly: false, // allows JS code to access it
+      });
       req.flash('success', { msg: 'Success! You are logged in.' });
       res.redirect(req.session.returnTo || '/');
     });
@@ -158,7 +163,8 @@ exports.postSignup = async (req, res, next) => {
  */
 exports.getAccount = (req, res) => {
   res.render('account/profile', {
-    title: 'Account Management'
+    title: 'Account Management',
+    cookie_csrf: req.cookies.csrf
   });
 };
 
@@ -174,6 +180,18 @@ exports.postUpdateProfile = async (req, res, next) => {
     req.flash('errors', validationErrors);
     return res.redirect('/account');
   }
+
+  // Double Submit Cookie Check
+  // if (!req.cookies.csrf) {
+  //   console.log('CSRF Cookie Not Set')
+  //   validationErrors.push({ msg: 'CSRF Cookie Not Set' });
+  //   return res.redirect('/account');
+  // } else if (req.cookies.csrf !== req.body._csrf) {
+  //   validationErrors.push({ msg: 'CSRF Validation Failed' });
+  //   console.log('CSRF Validation Failed')
+  //   return res.redirect('/account');
+  // }
+
   req.body.email = validator.normalizeEmail(req.body.email, { gmail_remove_dots: false });
   try {
     const user = await User.findById(req.user.id);
@@ -260,7 +278,7 @@ exports.getOauthUnlink = async (req, res, next) => {
     ) {
       req.flash('errors', {
         msg: `The ${_.startCase(_.toLower(provider))} account cannot be unlinked without another form of login enabled.`
-        + ' Please link another account or add an email address and password.'
+          + ' Please link another account or add an email address and password.'
       });
       return res.redirect('/account');
     }
