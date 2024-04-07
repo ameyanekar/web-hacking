@@ -5,7 +5,7 @@ block content
     h3 Profile Information
 
   form(action='/account/profile', method='POST')
-    //- input(type='hidden', name='_csrf', value=_csrf)
+    input(type='hidden', name='_csrf', value=_csrf)
     //- Uncomment input field above to enable CSRF token in form
     //- input(type='hidden', name='_csrf', value=cookie_csrf)
     //- Above line is for testing double submit cookies

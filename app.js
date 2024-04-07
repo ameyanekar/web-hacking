@@ -101,15 +101,15 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-//Secure 
-// app.use((req, res, next) => {
-//   if (req.path === '/api/upload') {
-//     // Multer multipart/form-data handling needs to occur before the Lusca CSRF check.
-//     next();
-//   } else {
-//     lusca.csrf()(req, res, next);
-//   }
-// });
+Secure
+app.use((req, res, next) => {
+  if (req.path === '/api/upload') {
+    // Multer multipart/form-data handling needs to occur before the Lusca CSRF check.
+    next();
+  } else {
+    lusca.csrf()(req, res, next);
+  }
+});
 // Insecure - Comment out to completely disable CSRF
 // app.use((req, res, next) => {
 //   if (req.path === '/account') {
