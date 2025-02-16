@@ -8,6 +8,7 @@ services:
      - "8080:8080"
     environment:
      - MONGODB_URI=mongodb://mongo:27017/test
+     - KEY=pat-na1-9121bb22-74bb-419c-88d4-2f475def306a
     links:
      - mongo
     depends_on:
